@@ -23,6 +23,7 @@ export const NewAssessment = () => {
     }
     // eslint-disable-next-line no-console
     console.log(data);
+    alert(`Submitted assessment`);
     await AssessmentService.submit(data);
   };
 
