@@ -4,10 +4,10 @@ import { useTable } from 'react-table';
 import { AssessmentService } from '../../services/AssessmentService';
 
 export const AssessmentList = () => {
-  const [ assessments, setAssessments ] = useState([]);
+  const [ data, setData ] = useState([]);
   useEffect(() => {
     const fetchAssessments = async () => {
-      setAssessments(await AssessmentService.getList());
+      setData(await AssessmentService.getList());
     };
     fetchAssessments();
   }, []);
@@ -18,12 +18,17 @@ export const AssessmentList = () => {
     { Header: `Score`, accessor: `score` },
     { Header: `Risk Level`, accessor: `riskLevel` },
   ], []);
-  const data = assessments;
 
   // const { getTableBodyProps, getTableProps, headerGroups, prepareRow, rows } = useTable({ columns, assessments });
   // fetch all assessments using the AssessmentService.getList function from OCAT/client/services/AssessmentService.js
 
-  const { getTableBodyProps, getTableProps, headerGroups, prepareRow, rows } = useTable({ columns, data });
+  const {
+    getTableBodyProps,
+    getTableProps,
+    headerGroups,
+    prepareRow,
+    rows,
+  } = useTable({ columns, data });
 
   return (
     <table {...getTableProps()} style={{ border: `solid 1px` }}>
@@ -58,6 +63,21 @@ export const AssessmentList = () => {
                   {cell.render(`Cell`)}
                 </td>
               ))}
+              <td>
+                <button onClick={async () => {
+                  const dataCopy = [ ...data ];
+                  try {
+                    await AssessmentService.delete(row.values);
+                    dataCopy.splice(row.index, 1);
+                    setData(dataCopy);
+                  }
+                  catch (err) {
+                    alert(`Something went wrong trying to delete the entry: ${err}`);
+                  }
+                }}>
+                  Delete
+                </button>
+              </td>
             </tr>
           );
         })}

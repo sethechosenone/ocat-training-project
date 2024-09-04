@@ -19,7 +19,7 @@ assessmentRouter.post(
       ResponseHandler(
         res,
         `Submitted assessment`,
-        {},
+        { assessment },
       );
     } catch (err) {
       next(err);
@@ -42,6 +42,25 @@ assessmentRouter.get(
         { assessments },
       );
     } catch (err) {
+      next(err);
+    }
+  },
+);
+
+assessmentRouter.post(
+  `/delete`,
+  async (req, res, next) => {
+    const { assessment } = req.body;
+
+    try {
+      await AssessmentService.delete(assessment);
+      ResponseHandler(
+        res,
+        `Deleted assessment`,
+        { assessment },
+      );
+    }
+    catch (err) {
       next(err);
     }
   },

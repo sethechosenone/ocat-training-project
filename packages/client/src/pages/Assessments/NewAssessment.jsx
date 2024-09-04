@@ -21,10 +21,13 @@ export const NewAssessment = () => {
     else {
       data.riskLevel = `high`;
     }
-    // eslint-disable-next-line no-console
-    console.log(data);
-    alert(`Submitted assessment`);
-    await AssessmentService.submit(data);
+    try {
+      await AssessmentService.submit(data);
+      alert(`Submitted assessment`);
+    }
+    catch (err) {
+      alert(`Something went wrong submitting the assessment: ${err}`);
+    }
   };
 
   return <Form onSubmit={handleSubmit(onSubmit)}>
