@@ -67,7 +67,7 @@ export const AssessmentList = () => {
                 <button onClick={async () => {
                   const dataCopy = [ ...data ];
                   try {
-                    await AssessmentService.delete(row.values);
+                    await AssessmentService.delete(row.original.id);
                     dataCopy.splice(row.index, 1);
                     setData(dataCopy);
                   }

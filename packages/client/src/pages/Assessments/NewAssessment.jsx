@@ -8,19 +8,37 @@ export const NewAssessment = () => {
   // create a form that utilizes the "onSubmit" function to send data to
   // packages/client/src/services/AssessmentService.js and then onto the packages/api/src/routes/assessment express API
   const { handleSubmit, register } = useForm();
+  const getScore = (form) => {
+    let sum = 0;
+    const selections = [
+      form.previousContact,
+      form.catAltercations,
+      form.ownerAltercations,
+      form.playsWellWithDogs,
+      form.hissesAtStrangers,
+    ];
+    selections.forEach((i) => {
+      const currentNum = Number(i);
+      sum += currentNum;
+    });
+    return sum;
+  };
+  const getRiskLevel = (form) => {
+    let riskLevel = `low`;
+    if (form.score >= 2) {
+      riskLevel = `medium`;
+    }
+    else if (form.score >= 4) {
+      riskLevel = `high`;
+    }
+    return riskLevel;
+  };
   const onSubmit = async (data) => {
     data.instrumentType = 1;
     // eslint-disable-next-line max-len
-    data.score = Number(data.previousContact) + Number(data.catAltercations) + Number(data.ownerAltercations) + Number(data.playsWellWithDogs) + Number(data.hissesAtStrangers);
-    if (data.score <= 1) {
-      data.riskLevel = `low`;
-    }
-    else if (data.score <= 3) {
-      data.riskLevel = `medium`;
-    }
-    else {
-      data.riskLevel = `high`;
-    }
+    // data.score = Number(data.previousContact) + Number(data.catAltercations) + Number(data.ownerAltercations) + Number(data.playsWellWithDogs) + Number(data.hissesAtStrangers);
+    data.score = getScore(data);
+    data.riskLevel = getRiskLevel(data);
     try {
       await AssessmentService.submit(data);
       alert(`Submitted assessment`);
